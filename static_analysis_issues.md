@@ -1,30 +1,29 @@
 # Static Code Analysis — Issue Table
 
-**Project:** Pharmacy Manager  
-**Tools used:** Pylint, Bandit, Flake8  
-**File analyzed:** pharmacy_manager.py
+**Project:** Pharmacy Manager
+**File:** `pharmacy_manager.py`
+**Tools:** Pylint, Bandit, Flake8
 
-| No. | Tool | Issue identified | Severity / category | Fix implemented |
-|---:|---|---|---|---|
-| 1 | Pylint | Missing module and function docstrings | Code quality | Added appropriate documentation strings. |
-| 2 | Pylint | Function and variable names did not follow Python naming conventions | Maintainability | Renamed identifiers using snake_case. |
-| 3 | Pylint | Mutable list used as a default argument | Correctness | Removed the mutable default argument to prevent shared state between calls. |
-| 4 | Pylint | Bare exception handling | Reliability | Replaced broad exception handling with specific exceptions. |
-| 5 | Pylint / Bandit | Unsafe use of eval() | Security | Replaced eval() with restricted arithmetic-expression parsing. |
-| 6 | Pylint / Flake8 | Unused imports and formatting violations | Code quality | Removed unused imports and corrected spacing and line lengths. |
-| 7 | Bandit | MD5 used for hashing | Security | Replaced MD5 with SHA-256. |
-| 8 | Bandit | random.randint() used to generate prescription numbers | Security | Used the secrets module for secure random-number generation. |
-| 9 | Bandit | Pickle used to load serialized data | Security | Replaced pickle serialization with JSON. |
-| 10 | Bandit | os.system() used to display output | Security | Replaced the system command with Python's print() function. |
-| 11 | Bandit | Hardcoded password | Security | Read the password from the PHARMACY_DB_PASSWORD environment variable and used a constant-time comparison. |
-| 12 | Pylint | Files were opened and closed manually | Resource management | Used context managers where file operations are performed. |
-| 13 | Bandit | Exceptions were caught and silently ignored | Reliability | Removed silent exception handling and validated loaded data. |
-| 14 | Flake8 | Excessive blank lines and long lines | Style | Corrected blank-line spacing and wrapped long statements. |
+| Issue | Type | Original line(s) | Description | Fix approach |
+|---|---|---:|---|---|
+| Mutable default argument | Bug | 13 | The default list could be shared across function calls. | Use None and initialize a new list inside the function. |
+| Hardcoded password | Security | 11 | A password was stored directly in source code. | Read the password from an environment variable. |
+| Unsafe expression evaluation | Security | 48 | Evaluating untrusted expressions can execute unintended code. | Use a restricted AST-based arithmetic evaluator. |
+| Weak MD5 hashing | Security | 51 | MD5 is unsuitable for security-sensitive hashing. | Replace MD5 with SHA-256. |
+| Insecure random number generation | Security | 54 | The random module is not intended for security-sensitive values. | Use the secrets module. |
+| Unsafe pickle deserialization | Security | 64 | Loading untrusted pickle data can execute arbitrary code. | Use JSON for stock-data serialization. |
+| Operating-system command execution | Security | 68 | Shell command execution introduces avoidable security risk. | Use Python functionality such as print() instead. |
+| Overly broad exception handling | Reliability | 27 | A bare exception can hide unexpected errors. | Catch specific exceptions and handle them explicitly. |
+| Missing documentation | Maintainability | 13 | Functions lacked descriptive documentation. | Add docstrings describing their purpose. |
+| Nonstandard naming | Maintainability | 13 | CamelCase function names did not follow Python function naming conventions. | Rename functions using snake_case. |
+| Unused imports | Maintainability | 2 | Unused imports added unnecessary code. | Remove imports that are not needed. |
+| Formatting and line-length violations | Style | See Flake8 baseline report | Flake8 identified whitespace and line-length violations. | Correct blank lines, spacing, and long statements. |
 
-## Final verification
+## Verification results
 
-- Pylint score: 10.00/10
-- Bandit: No issues identified.
-- Flake8: No reported violations.
+- **Pylint:** 10.00/10.
+- **Bandit:** No issues identified in the final scan.
+- **Flake8:** No reported violations in the final scan.
+- **Execution:** `python pharmacy_manager.py` ran successfully.
 
-The final reports should be retained alongside the original baseline reports as evidence of the improvements.
+Line numbers refer to the original starter file where the matching code was found. For style findings, consult `flake8_report_before.txt` for the original reported line numbers.
